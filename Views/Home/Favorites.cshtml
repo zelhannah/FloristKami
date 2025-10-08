@@ -1,0 +1,216 @@
+@model List<FloristKami.Models.Product>
+@{
+    ViewData["Title"] = "My Favorites";
+}
+
+<!-- ========================================
+     FAVORITES PAGE HEADER
+     ======================================== -->
+<div class="bg-gradient-to-r from-rose-200 via-pink-100 to-amber-100 py-16 px-4">
+    <div class="max-w-7xl mx-auto text-center">
+        <div class="inline-block mb-4">
+            <svg class="w-20 h-20 text-rose-600 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <h2 class="text-5xl font-bold text-rose-800 mb-3">My Favorites</h2>
+        <p class="text-lg text-stone-700">Koleksi bunga yang Anda sukai</p>
+    </div>
+</div>
+
+<!-- ========================================
+     FAVORITES GRID
+     ======================================== -->
+<div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <!-- Favorites Count -->
+    <div id="favoritesCount" class="hidden mb-8 text-center">
+        <div class="inline-block bg-white rounded-full px-6 py-3 shadow-lg border-2 border-rose-200">
+            <span class="text-rose-600 font-bold text-lg">❤️ </span>
+            <span id="favCountText" class="font-semibold text-stone-700"></span>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="favoritesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Products will be rendered here by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyFavorites" class="hidden text-center py-20">
+        <svg class="mx-auto h-32 w-32 text-stone-300 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <h3 class="text-3xl font-bold text-stone-700 mb-3">Belum Ada Favorit</h3>
+        <p class="text-stone-500 text-lg mb-8">Mulai tambahkan produk favorit Anda dengan klik ❤️ pada produk</p>
+        <a href="/" class="inline-block px-8 py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full font-semibold hover:shadow-xl hover:scale-105 transition-all text-lg">
+            Lihat Katalog
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const allProducts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+        const favoritesGrid = document.getElementById("favoritesGrid");
+        const emptyFavorites = document.getElementById("emptyFavorites");
+        const favoritesCount = document.getElementById("favoritesCount");
+        const favCountText = document.getElementById("favCountText");
+
+        // Filter products yang ada di favorites
+        const favoriteProducts = allProducts.filter(p => favorites.includes(p.Id.toString()));
+
+        if (favoriteProducts.length === 0) {
+            // Show empty state
+            favoritesGrid.classList.add("hidden");
+            emptyFavorites.classList.remove("hidden");
+            favoritesCount.classList.add("hidden");
+        } else {
+            // Show favorites count
+            favoritesCount.classList.remove("hidden");
+            favCountText.textContent = `${favoriteProducts.length} produk favorit`;
+            
+            // Render favorite products
+            favoritesGrid.innerHTML = '';
+            favoriteProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-rose-100 hover:border-rose-300 transform hover:-translate-y-2 animate-fade-in';
+                
+                productCard.innerHTML = `
+                    <div class="relative overflow-hidden bg-gradient-to-br from-rose-50 to-amber-50">
+                        <img src="${product.Image}" 
+                             alt="${product.Name}" 
+                             class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700" 
+                             onerror="this.src='https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400'" />
+                        
+                        <!-- Remove Favorite Button -->
+                        <button onclick="removeFavorite(${product.Id})" 
+                                class="absolute top-4 right-4 bg-white/95 backdrop-blur p-3 rounded-full shadow-lg hover:scale-125 hover:rotate-12 transition-all active:scale-95 group"
+                                title="Remove from favorites">
+                            <svg class="w-6 h-6 text-rose-600 group-hover:text-rose-700" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Rating Badge -->
+                        <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-full flex items-center space-x-2 shadow-lg">
+                            <svg class="w-5 h-5 fill-amber-400 text-amber-400" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <span class="text-sm font-bold text-stone-700">${product.Rating}</span>
+                        </div>
+                        
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-lg">
+                            ${product.Category}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-stone-800 mb-2 line-clamp-1">
+                            ${product.Name}
+                        </h3>
+                        <p class="text-sm text-stone-600 mb-4 line-clamp-2 leading-relaxed">
+                            ${product.Description}
+                        </p>
+                        
+                        <div class="flex items-center justify-between">
+                            ${product.PriceMin && product.PriceMax 
+                                ? `<div class="flex flex-col">
+                                    <span class="text-xs text-stone-500 mb-1">Mulai dari</span>
+                                    <div class="text-lg font-bold text-rose-600">
+                                        Rp ${product.PriceMin.toLocaleString('id-ID')}
+                                    </div>
+                                   </div>`
+                                : `<div class="text-lg font-bold text-rose-600">Hubungi Kami</div>`
+                            }
+                            
+                            <a href="https://wa.me/6281389781256?text=Halo%20FloristKami,%20saya%20tertarik%20memesan%20@Uri.EscapeDataString(product.Name)%20dengan%20harga%20Rp%20@product.PriceMin%20-%20Rp%20@product.PriceMax.%20Apakah%20tersedia?" 
+                                target="_blank"
+                                class="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all active:scale-95">
+                                Order
+                            </a>
+
+                        </div>
+                    </div>
+                `;
+                
+                favoritesGrid.appendChild(productCard);
+            });
+        }
+    });
+
+    // Function to remove favorite
+    function removeFavorite(productId) {
+        let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        favorites = favorites.filter(id => id !== productId.toString());
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        
+        // Show toast notification
+        if (window.FloristKami && window.FloristKami.showToast) {
+            window.FloristKami.showToast('Dihapus dari favorit', 'error');
+        }
+        
+        // Reload page to update
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+    }
+</script>
+}
+
+<!--
+========================================
+PENJELASAN FAVORITES.CSHTML:
+========================================
+
+1. PAGE HEADER:
+   - Gradient background matching main theme
+   - Large animated heart icon
+   - Clear title & description
+
+2. FAVORITES COUNT:
+   - Shows total favorite products
+   - Hidden when no favorites
+   - Styled badge with border
+
+3. PRODUCTS GRID:
+   - Same styling as Index page untuk consistency
+   - Rendered from localStorage data
+   - Matching Product model from server
+   - Responsive grid layout
+
+4. PRODUCT CARD FEATURES:
+   - Image dengan hover zoom effect
+   - FILLED heart button (red) untuk remove
+   - Rating badge
+   - Category badge
+   - Price display
+   - Order button
+
+5. REMOVE FUNCTIONALITY:
+   - Click heart to remove from favorites
+   - Toast notification feedback
+   - Auto reload to update display
+   - Updates navbar badge count
+
+6. EMPTY STATE:
+   - Friendly message
+   - Large icon
+   - CTA button ke catalog
+   - Only shows when no favorites
+
+7. DATA FLOW:
+   - Read favorites from localStorage
+   - Filter Model (all products) by favorite IDs
+   - Render matching products
+   - Sync with site.js for consistency
+
+8. ANIMATIONS:
+   - fade-in untuk card
+   - hover effects
+   - smooth transitions
+   - pulse animation pada header heart
+-->

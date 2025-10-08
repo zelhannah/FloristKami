@@ -1,0 +1,398 @@
+﻿@model List<FloristKami.Models.Product>
+@{
+    ViewData["Title"] = "Katalog Florist";
+}
+
+<!-- ========================================
+     HERO SECTION - Eye-catching banner with gradient
+     ======================================== -->
+<div class="relative bg-gradient-to-r from-rose-200 via-pink-100 to-amber-100 py-20 px-4 overflow-hidden">
+    <!-- Decorative floating elements -->
+    <div class="absolute top-10 left-10 w-20 h-20 bg-rose-300 rounded-full opacity-20 animate-bounce-slow"></div>
+    <div class="absolute bottom-10 right-10 w-32 h-32 bg-amber-300 rounded-full opacity-20 animate-bounce-slow" style="animation-delay: 1s;"></div>
+    
+    <div class="max-w-7xl mx-auto text-center relative z-10">
+        <h2 class="text-5xl sm:text-6xl font-bold text-rose-800 mb-4 animate-slide-up">
+            Katalog Florist Kami 
+        </h2>
+        <p class="text-xl text-stone-700 mb-8 animate-slide-up max-w-3xl mx-auto" style="animation-delay: 0.2s;">
+            Rangkai bunga impian Anda! Pilih berdasarkan warna favorit atau jenis bunga kesukaan Anda
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto relative animate-slide-up" style="animation-delay: 0.4s;">
+            <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 text-stone-400 w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Cari bunga favorit Anda... "
+                class="w-full pl-14 pr-6 py-5 rounded-full border-2 border-rose-200 focus:border-rose-400 focus:outline-none focus:ring-4 focus:ring-rose-100 shadow-xl bg-white/90 backdrop-blur text-lg transition-all"
+            />
+        </div>
+        
+        @* <!-- Quick Stats -->
+        <div class="flex justify-center gap-8 mt-10 flex-wrap">
+            <div class="bg-white/80 backdrop-blur px-6 py-3 rounded-full shadow-lg">
+                <span class="font-bold text-rose-600 text-2xl">30+</span>
+                <span class="text-stone-600 ml-2">Produk</span>
+            </div>
+            <div class="bg-white/80 backdrop-blur px-6 py-3 rounded-full shadow-lg">
+                <span class="font-bold text-rose-600 text-2xl">⭐ 4.8</span>
+                <span class="text-stone-600 ml-2">Rating</span>
+            </div>
+            <div class="bg-white/80 backdrop-blur px-6 py-3 rounded-full shadow-lg">
+                <span class="font-bold text-rose-600 text-2xl">1000+</span>
+                <span class="text-stone-600 ml-2">Happy Customers</span>
+            </div>
+        </div> *@
+    </div>
+</div>
+
+<!-- ========================================
+     CATEGORY FILTER BUTTONS
+     ======================================== -->
+<div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8" id="products">
+    <h3 class="text-2xl font-bold text-center text-stone-800 mb-6">Pilih Kategori</h3>
+    <div class="flex flex-wrap gap-3 justify-center" id="categories">
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-lg bg-gradient-to-r from-rose-500 to-pink-500 text-white scale-105 hover:scale-110 active:scale-95" data-category="all">
+            Semua Produk
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="bouquet">
+            Hand Bouquet
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="krans">
+            Krans Flower
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="standing">
+            Standing Flower
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="board">
+            Flower Board
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="vase">
+            Vase Arrangement
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="specialedition">
+            Special Edition
+        </button>
+        <button class="category-btn px-8 py-3 rounded-full font-semibold transition-all shadow-md bg-white text-stone-700 hover:bg-rose-50 hover:shadow-lg hover:scale-105 border-2 border-rose-200 active:scale-95" data-category="custom">
+            Custom Flower
+        </button>
+    </div>
+</div>
+
+<!-- ========================================
+     PRODUCTS GRID - Main product display
+     ======================================== -->
+<div class="max-w-7xl mx-auto px-4 pb-16 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productsGrid">
+        @foreach (var product in Model)
+        {
+            <div class="product-card bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group border-2 border-rose-100 hover:border-rose-300 transform hover:-translate-y-2" 
+                 data-category="@product.Category" 
+                 data-name="@product.Name.ToLower()"
+                 data-description="@product.Description.ToLower()">
+                
+                <!-- Product Image Container -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-rose-50 to-amber-50">
+                    <img src="@product.Image" 
+                         alt="@product.Name" 
+                         class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700" 
+                         onerror="this.src='https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400'" />
+                    
+                    <!-- Favorite Button -->
+                    <button class="favorite-toggle absolute top-4 right-4 bg-white/95 backdrop-blur p-3 rounded-full shadow-lg hover:scale-125 hover:rotate-12 transition-all active:scale-95" 
+                            data-id="@product.Id"
+                            title="Add to favorites">
+                        <svg class="heart-icon w-6 h-6 text-stone-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Rating Badge -->
+                    <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-full flex items-center space-x-2 shadow-lg">
+                        <svg class="w-5 h-5 fill-amber-400 text-amber-400" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                        <span class="text-sm font-bold text-stone-700">@product.Rating</span>
+                    </div>
+                    
+                    <!-- Category Badge -->
+                    <div class="absolute top-4 left-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-lg">
+                        @product.Category
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-stone-800 mb-2 group-hover:text-rose-600 transition-colors line-clamp-1">
+                        @product.Name
+                    </h3>
+                    <p class="text-sm text-stone-600 mb-4 line-clamp-2 leading-relaxed">
+                        @product.Description
+                    </p>
+                    
+                    <!-- Price & CTA -->
+                    <div class="flex items-center justify-between">
+                        @if (product.PriceMin > 0 && product.PriceMax > 0)
+                        {
+                            <div class="flex flex-col">
+                                <span class="text-xs text-stone-500 mb-1">Mulai dari</span>
+                                <div class="text-lg font-bold text-rose-600">
+                                    Rp @product.PriceMin.ToString("N0")
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-lg font-bold text-rose-600">
+                                Hubungi Kami
+                            </div>
+                        }
+                        
+                        @* <button class="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all active:scale-95">
+                            Order
+                        </button> *@
+                        <a href="https://wa.me/6281389781256?text=Halo,%20saya%20tertarik%20untuk%20memesan%20@product.Name%20dengan%20harga%20Rp%20@product.PriceMin%20-%20Rp%20@product.PriceMax.%20Apakah%20tersedia?" 
+                                target="_blank"
+                                class="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all active:scale-95">
+                                Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-20">
+        <svg class="mx-auto h-32 w-32 text-stone-300 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <h3 class="text-2xl font-bold text-stone-700 mb-2">Produk Tidak Ditemukan</h3>
+        <p class="text-stone-500 text-lg mb-6">Coba kata kunci lain atau reset filter</p>
+        <button onclick="window.FloristKami.resetFilters()" class="px-8 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all">
+            Reset Filter
+        </button>
+    </div>
+</div>
+
+<!-- ========================================
+     SPECIAL EDITION CAROUSEL
+     ======================================== -->
+<div id="specialEditionSection" class="max-w-7xl mx-auto px-4 pb-20 sm:px-6 lg:px-8 hidden">
+    <div class="text-center mb-10">
+        <h2 class="text-4xl font-bold text-rose-800 mb-3">🎁 Special Edition Collection</h2>
+        <p class="text-stone-600 text-lg">Kreasi eksklusif untuk momen istimewa Anda</p>
+    </div>
+    
+    <div class="relative">
+        <!-- Scroll buttons -->
+        <button class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur p-3 rounded-full shadow-lg hover:bg-rose-50 transition-all" onclick="document.getElementById('specialCarousel').scrollBy({left: -300, behavior: 'smooth'})">
+            <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <button class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur p-3 rounded-full shadow-lg hover:bg-rose-50 transition-all" onclick="document.getElementById('specialCarousel').scrollBy({left: 300, behavior: 'smooth'})">
+            <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </button>
+        
+        <div id="specialCarousel" class="overflow-x-auto flex space-x-6 pb-6 snap-x snap-mandatory scrollbar-hide scroll-smooth px-12">
+            @foreach (var product in Model.Where(p => p.Category == "specialedition"))
+            {
+                <div class="min-w-[320px] max-w-sm bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden snap-center flex-shrink-0 border-2 border-rose-100 hover:border-rose-300 transform hover:-translate-y-2">
+                    <div class="relative bg-gradient-to-br from-rose-50 to-amber-50">
+                        <img src="@product.Image" 
+                             alt="@product.Name" 
+                             class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700"
+                             onerror="this.src='https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400'" />
+                        
+                        <button class="favorite-toggle absolute top-4 right-4 bg-white/95 backdrop-blur p-3 rounded-full shadow-lg hover:scale-125 hover:rotate-12 transition-all active:scale-95" 
+                                data-id="@product.Id"
+                                title="Add to favorites">
+                            <svg class="heart-icon w-6 h-6 text-stone-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                        
+                        <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-full flex items-center space-x-2 shadow-lg">
+                            <svg class="w-5 h-5 fill-amber-400" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <span class="text-sm font-bold text-stone-700">@product.Rating</span>
+                        </div>
+                        
+                        <div class="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-lg">
+                            ⭐ Special
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-stone-800 mb-2 line-clamp-1">@product.Name</h3>
+                        <p class="text-sm text-stone-600 mb-4 line-clamp-2 leading-relaxed">@product.Description</p>
+                        
+                        <div class="flex items-center justify-between">
+                            @if (product.PriceMin > 0 && product.PriceMax > 0)
+                            {
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-stone-500 mb-1">Mulai dari</span>
+                                    <div class="text-lg font-bold text-rose-600">
+                                        Rp @product.PriceMin.ToString("N0")
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-lg font-bold text-rose-600">
+                                    Hubungi Kami
+                                </div>
+                            }
+                            
+                            <a href="https://wa.me/6281389781256?text=Halo%20FloristKami,%20saya%20tertarik%20memesan%20@Uri.EscapeDataString(product.Name)%20dengan%20harga%20Rp%20@product.PriceMin%20-%20Rp%20@product.PriceMax.%20Apakah%20tersedia?" 
+                                target="_blank"
+                                class="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all active:scale-95">
+                                Order
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ========================================
+     WHY CHOOSE US SECTION
+     ======================================== -->
+<div class="bg-gradient-to-r from-rose-100 via-pink-50 to-amber-100 py-16 mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold text-center text-rose-800 mb-12">Mengapa Memilih Kami?</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all text-center transform hover:-translate-y-2">
+                <div class="bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Bunga Fresh</h3>
+                <p class="text-stone-600 text-sm">Semua bunga dipilih fresh setiap hari dari supplier terpercaya</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all text-center transform hover:-translate-y-2">
+                <div class="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Fast Delivery</h3>
+                <p class="text-stone-600 text-sm">Pengiriman cepat & aman ke seluruh Indonesia</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all text-center transform hover:-translate-y-2">
+                <div class="bg-pink-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Custom Design</h3>
+                <p class="text-stone-600 text-sm">Desain bouquet custom sesuai keinginan & budget Anda</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all text-center transform hover:-translate-y-2">
+                <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Best Quality & Service</h3>
+                <p class="text-stone-600 text-sm">Melayani dengan cepat dan sepenuh hati, ea</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hide scrollbar for carousel -->
+<style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+@section Scripts {
+<script>
+    // All functionality handled by site.js
+    // Expose resetFilters for empty state button
+    window.resetFilters = window.FloristKami.resetFilters;
+</script>
+}
+
+<!--
+========================================
+PENJELASAN INDEX.CSHTML:
+========================================
+
+1. HERO SECTION:
+   - Gradient background dengan floating elements
+   - Animated title & subtitle
+   - Search bar dengan icon
+   - Quick stats (30+ Products, 4.8 Rating, 1000+ Customers)
+   - Responsive design untuk mobile
+
+2. CATEGORY FILTER:
+   - 7 categories dengan emoji icons
+   - Active state dengan gradient
+   - Hover effects
+   - Mobile responsive wrapping
+
+3. PRODUCTS GRID:
+   - Responsive: 1 col (mobile), 2 (tablet), 3 (desktop), 4 (xl)
+   - Product card features:
+     * High-quality image dengan hover zoom
+     * Favorite button dengan animation
+     * Rating badge
+     * Category badge
+     * Price display atau "Hubungi Kami"
+     * Order button dengan gradient
+   - Hover effects: shadow, translate, scale
+   - Error handling untuk gambar
+
+4. EMPTY STATE:
+   - Muncul ketika tidak ada hasil search/filter
+   - Icon, message, dan reset button
+   - User-friendly feedback
+
+5. SPECIAL EDITION CAROUSEL:
+   - Horizontal scrollable carousel
+   - Scroll buttons (prev/next)
+   - Snap scrolling untuk smooth UX
+   - Berbeda gradient untuk special products
+   - Hide scrollbar untuk clean look
+
+6. WHY CHOOSE US:
+   - 4 value propositions
+   - Icon + heading + description
+   - Hover animations
+   - Responsive grid
+
+7. ANIMATIONS:
+   - slide-up untuk hero elements
+   - bounce-slow untuk decorative elements
+   - hover effects pada semua interactive elements
+   - smooth transitions
+
+8. ACCESSIBILITY:
+   - Alt text untuk images
+   - Aria labels untuk buttons
+   - Keyboard navigable
+   - Good color contrast
+-->
